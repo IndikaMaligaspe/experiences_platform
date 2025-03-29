@@ -1,0 +1,15 @@
+[
+    {
+      "id": "booking-001",
+      "activityId": "everest-trek-001",
+      "dateTime": "2025-04-01T08:00:00+05:45",
+      "customer": {
+        "name": "John Doe",
+        "email": "john@example.com",
+        "phone": "+61412345678"
+      },
+      "participants": 2,
+      "status": "confirmed"
+    }
+  ]
+  

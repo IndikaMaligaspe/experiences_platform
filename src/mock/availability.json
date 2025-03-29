@@ -1,0 +1,16 @@
+[
+    {
+      "activityId": "everest-trek-001",
+      "startTime": "2025-04-01T08:00:00+05:45",
+      "endTime": "2025-04-12T17:00:00+05:45",
+      "recurring": "none",
+      "customDates": [],
+      "blackoutDates": ["2025-04-05"],
+      "cutoffTime": "2025-03-28T08:00:00+05:45",
+      "timezone": "Asia/Kathmandu",
+      "specialInstructions": "Please bring valid ID and travel insurance.",
+      "rating": 4.8,
+      "feedbackScale": "1-5"
+    }
+  ]
+  

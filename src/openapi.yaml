@@ -1,0 +1,414 @@
+openapi: 3.0.3
+info:
+  title: Experiences B2B API
+  description: >
+    This API specification defines two sets of APIs:
+
+    1. **API-IN**: Used by third-party experience providers to push their listings, availability, pricing, and vendor details into our system.
+    2. **API-OUT**: Used by distributor systems (e.g., OTAs, resellers, travel platforms) to search, retrieve, and book experiences in real time.
+
+    This spec follows the OpenAPI 3.0.3 standard, uses ISO country/currency codes, IANA timezone strings, and supports RESTful resource principles.
+
+    Edge cases such as missing media, availability exceptions, conflicting bookings, and inactive experiences are supported.
+  version: 1.1.0
+servers:
+  - url: https://api.example.com/v1
+    description: Production server
+
+components:
+  schemas:
+    Error:
+      type: object
+      properties:
+        code:
+          type: integer
+        message:
+          type: string
+
+    Location:
+      type: object
+      required: [country, city, timezone]
+      properties:
+        country:
+          type: string
+          example: "AU"
+        city:
+          type: string
+          example: "Adelaide"
+        address:
+          type: string
+        latitude:
+          type: number
+          format: float
+        longitude:
+          type: number
+          format: float
+        timezone:
+          type: string
+          example: "Australia/Adelaide"
+
+    Media:
+      type: object
+      properties:
+        images:
+          type: array
+          items:
+            type: string
+            format: uri
+        videos:
+          type: array
+          items:
+            type: string
+            format: uri
+        brochures:
+          type: array
+          items:
+            type: string
+            format: uri
+
+    Vendor:
+      type: object
+      properties:
+        name:
+          type: string
+        contact:
+          type: object
+          properties:
+            email:
+              type: string
+              format: email
+            phone:
+              type: string
+              pattern: "^[+][0-9]{7,15}$"
+            whatsapp:
+              type: string
+            website:
+              type: string
+              format: uri
+            social:
+              type: array
+              items:
+                type: string
+                format: uri
+
+    Pricing:
+      type: object
+      required: [currency, basePrice]
+      properties:
+        basePrice:
+          type: number
+        currency:
+          type: string
+          example: "USD"
+        netRate:
+          type: number
+        sellingRate:
+          type: number
+        taxesAndFees:
+          type: number
+        discounts:
+          type: string
+        paymentPolicy:
+          type: string
+        commission:
+          type: object
+          properties:
+            type:
+              type: string
+              enum: [fixed, percentage]
+            value:
+              type: number
+
+    Availability:
+      type: object
+      required: [startTime, endTime, cutoffTime, timezone]
+      properties:
+        startTime:
+          type: string
+          format: date-time
+        endTime:
+          type: string
+          format: date-time
+        recurring:
+          type: string
+          enum: [none, daily, weekly, custom]
+        customDates:
+          type: array
+          items:
+            type: string
+            format: date-time
+        blackoutDates:
+          type: array
+          items:
+            type: string
+            format: date
+        cutoffTime:
+          type: string
+          format: date-time
+        timezone:
+          type: string
+        specialInstructions:
+          type: string
+        rating:
+          type: number
+        feedbackScale:
+          type: string
+
+    Booking:
+      type: object
+      properties:
+        totalSlots:
+          type: integer
+        minParticipants:
+          type: integer
+        maxParticipants:
+          type: integer
+        instantBooking:
+          type: boolean
+        confirmationType:
+          type: string
+          enum: [manual, automatic]
+        allowOverbooking:
+          type: boolean
+
+    Policies:
+      type: object
+      properties:
+        cancellation:
+          type: string
+        refund:
+          type: string
+        ageRestriction:
+          type: string
+        safetyNotes:
+          type: string
+
+    Activity:
+      type: object
+      required:
+        [
+          id,
+          category,
+          type,
+          name,
+          shortDescription,
+          longDescription,
+          location,
+          pricing,
+          availability,
+        ]
+      properties:
+        id:
+          type: string
+        category:
+          type: string
+        type:
+          type: string
+        name:
+          type: string
+        shortDescription:
+          type: string
+        longDescription:
+          type: string
+        status:
+          type: string
+          enum: [active, inactive, draft]
+        tags:
+          type: array
+          items:
+            type: string
+        localizedDescriptions:
+          type: object
+          additionalProperties:
+            type: string
+        location:
+          $ref: "#/components/schemas/Location"
+        availability:
+          type: array
+          items:
+            $ref: "#/components/schemas/Availability"
+        pricing:
+          $ref: "#/components/schemas/Pricing"
+        booking:
+          $ref: "#/components/schemas/Booking"
+        media:
+          $ref: "#/components/schemas/Media"
+        vendor:
+          $ref: "#/components/schemas/Vendor"
+        policies:
+          $ref: "#/components/schemas/Policies"
+
+paths:
+  /activities:
+    post:
+      summary: Submit new activity
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Activity"
+      responses:
+        "201":
+          description: Activity created
+        "400":
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /search:
+    get:
+      summary: Search for activities
+      parameters:
+        - in: query
+          name: location
+          schema:
+            type: string
+        - in: query
+          name: category
+          schema:
+            type: string
+        - in: query
+          name: keywords
+          schema:
+            type: string
+        - in: query
+          name: startDate
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: endDate
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: sortBy
+          schema:
+            type: string
+            enum: [price, rating, popularity]
+        - in: query
+          name: page
+          schema:
+            type: integer
+        - in: query
+          name: limit
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: List of activities
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Activity"
+
+  /activities/{id}:
+    get:
+      summary: Get activity details
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Activity details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Activity"
+        "404":
+          description: Activity not found
+
+  /activities/{id}/availability:
+    get:
+      summary: Get availability
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: startDate
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: endDate
+          in: query
+          schema:
+            type: string
+            format: date
+      responses:
+        "200":
+          description: Availability details
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Availability"
+        "404":
+          description: Activity not found
+
+  /bookings:
+    post:
+      summary: Create booking
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                activityId:
+                  type: string
+                dateTime:
+                  type: string
+                  format: date-time
+                customer:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                    email:
+                      type: string
+                      format: email
+                    phone:
+                      type: string
+                participants:
+                  type: integer
+      responses:
+        "201":
+          description: Booking created
+        "400":
+          description: Invalid booking request
+        "409":
+          description: Conflict – No availability or overbooking error
+
+  /bookings/{bookingId}/status:
+    get:
+      summary: Get booking status
+      parameters:
+        - name: bookingId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Booking status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [pending, confirmed, cancelled]

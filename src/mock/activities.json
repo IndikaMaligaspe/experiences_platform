@@ -1,0 +1,81 @@
+[
+    {
+      "id": "everest-trek-001",
+      "category": "Adventure",
+      "type": "Trekking",
+      "name": "Mount Everest Base Camp Trek",
+      "shortDescription": "A 12-day adventure to the base of the world’s tallest mountain.",
+      "longDescription": "This guided trek takes you through the beautiful Khumbu region, offering panoramic views, cultural immersion, and physical challenge.",
+      "status": "active",
+      "tags": ["beginner", "family-friendly", "nature"],
+      "localizedDescriptions": {
+        "fr": "Randonnée au camp de base de l'Everest",
+        "es": "Caminata al campamento base del Everest"
+      },
+      "location": {
+        "country": "NP",
+        "city": "Lukla",
+        "address": "Lukla Airport, Everest Region",
+        "latitude": 27.6883,
+        "longitude": 86.7314,
+        "timezone": "Asia/Kathmandu"
+      },
+      "availability": [
+        {
+          "startTime": "2025-04-01T08:00:00+05:45",
+          "endTime": "2025-04-12T17:00:00+05:45",
+          "recurring": "none",
+          "customDates": [],
+          "blackoutDates": ["2025-04-05"],
+          "cutoffTime": "2025-03-28T08:00:00+05:45",
+          "timezone": "Asia/Kathmandu",
+          "specialInstructions": "Not suitable for seniors or those with breathing conditions.",
+          "rating": 4.8,
+          "feedbackScale": "1-5"
+        }
+      ],
+      "pricing": {
+        "basePrice": 1500,
+        "currency": "USD",
+        "netRate": 1200,
+        "sellingRate": 1800,
+        "taxesAndFees": 100,
+        "discounts": "10% off for groups of 4 or more",
+        "paymentPolicy": "Full refund up to 14 days before start",
+        "commission": {
+          "type": "percentage",
+          "value": 20
+        }
+      },
+      "booking": {
+        "totalSlots": 20,
+        "minParticipants": 1,
+        "maxParticipants": 10,
+        "instantBooking": true,
+        "confirmationType": "automatic",
+        "allowOverbooking": false
+      },
+      "media": {
+        "images": ["https://example.com/images/everest.jpg"],
+        "videos": ["https://example.com/videos/everest.mp4"],
+        "brochures": []
+      },
+      "vendor": {
+        "name": "Himalaya Treks",
+        "contact": {
+          "email": "info@himalayatreks.com",
+          "phone": "+97712345678",
+          "whatsapp": "+97712345678",
+          "website": "https://himalayatreks.com",
+          "social": ["https://instagram.com/himalayatreks"]
+        }
+      },
+      "policies": {
+        "cancellation": "Full refund 14 days before",
+        "refund": "Partial refund within 7 days",
+        "ageRestriction": "12+ only",
+        "safetyNotes": "Altitude sickness precautions advised"
+      }
+    }
+  ]
+  
